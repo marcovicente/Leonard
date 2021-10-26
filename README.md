@@ -28,6 +28,7 @@ Leonard warm up
 ### Create Git Repository
 
     git init -b main
+    git add .
 
 ### Prepare Visual Studio Code Environment
 
