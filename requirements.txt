@@ -2,9 +2,9 @@
 -e .
 
 # external requirements
-click
-Sphinx
-coverage
-awscli
+click>=8.0.3
+Sphinx>=4.2.0
 flake8>=4.0.1
 python-dotenv>=0.5.1
+fastapi>=0.70.0
+uvicorn>=0.70.0

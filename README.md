@@ -36,6 +36,16 @@ Leonard warm up
     Python: Select Interpreter --> [source folder]\.venv
     .gitignore --> add .venv/
 
+## Run Project
+
+### Start Server
+
+    uvicorn main:app --reload
+
+### Stop Server
+
+    CTRC + C
+
 ## Project Organization
 
     ├── LICENSE
