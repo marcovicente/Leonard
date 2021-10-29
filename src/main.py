@@ -1,9 +1,20 @@
 import logger
 import time
 from fastapi import FastAPI
+from dataclasses import dataclass
 from models.predict_model import predict_match_result
 
 my_logger = logger.get_logger("soccer prediction")
+
+
+@dataclass
+class Match:
+    # TODO: implement API using dataclass as parameter
+    # https://fastapi.tiangolo.com/advanced/dataclasses/
+    home_team: int
+    away_team: int
+    match_date: str
+
 
 app = FastAPI()
 
@@ -12,6 +23,11 @@ app = FastAPI()
 async def load_model():
     # TODO: Load Model on startup to be in cache
     my_logger.info("Loads model to cache")
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    my_logger.info("Application shutdown")
 
 
 @app.get("/")
