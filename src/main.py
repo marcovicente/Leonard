@@ -1,4 +1,5 @@
 import logger
+import time
 from fastapi import FastAPI
 from models.predict_model import predict_match_result
 
@@ -46,11 +47,19 @@ def predict(home: int, away: int, match_date: str):
     http://127.0.0.1:8000/home/9825/away/10260/match_date/20141226
 
     """
+    # Records starting time
+    start = time.process_time()
+
     # Predicts Soccer Match result
     try:
         prediction, confidence = predict_match_result(home,
                                                       away, match_date)
-        my_logger.info("Executed")
+
+        # Loggs time spent
+        my_logger.info("Predicted soccer game Outcome in {}"
+                       .format((time.process_time() - start)))
+
+        # Returns prediction
         return {"home": home, "away": away, "match_date": match_date,
                 "prediction": prediction, "confidence": confidence}
     except BaseException as err:

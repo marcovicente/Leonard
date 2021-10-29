@@ -1,4 +1,5 @@
 import pickle as pkl
+import logger
 import pandas as pd
 from datetime import date
 from dateutil import parser
@@ -9,37 +10,47 @@ MODEL_PATH = os.path.join(sys.path[0], "models/gaussian_nb_pca_model.pkl")
 DATA_PATH = os.path.join(sys.path[0], "data/soccer_dataset.csv")
 LABEL_DECODER = {0: 'AWAY_WIN', 1: 'HOME_WIN', 2: 'TIE'}
 
+my_logger = logger.get_logger("soccer prediction")
+
 
 def predict_match_result(home_team_id: int, away_team_id: int,
                          match_date_str: str):
 
     # Reads CSV processed
+    my_logger.info("Read data at {}".format(DATA_PATH))
     df = read_data(DATA_PATH)
 
+    # TODO: Create function to treat data
     match_date = date(int(match_date_str[0:4]),
                       int(match_date_str[4:6]),
                       int(match_date_str[6:8]))
 
+    # TODO: Preprocess this data
     df["date"] = df["date"].apply(lambda x: parser.parse(x).date())
 
+    # Loads the last 5 games from the home team
     df_home = (df[(df["home_team_api_id"] == home_team_id)
                & (df["date"] < match_date)]
                .sort_values("date", ascending=False)
                .head(1)
                .reset_index(drop=True))
 
+    # Validates if there are 5 games in database prior to the given date
     if not same_season(match_date, df_home.loc[0, "date"]):
-        return "The home team has less than 5 games, in this season.", "N/A"
+        raise Exception("The home team has less than 5 games, in this season.")
 
     df_home = df_home[HOME_FEATURES]
 
+    # Loads the last 5 games from the away team
     df_away = (df[(df["away_team_api_id"] == away_team_id)
                & (df["date"] < match_date)]
                .sort_values("date", ascending=False)
                .head(1)
                .reset_index(drop=True))
+
+    # Validates if there are 5 games in database prior to the given date
     if not same_season(match_date, df_away.loc[0, "date"]):
-        return "The away team has less than 5 games, in this season.", "N/A"
+        raise Exception("The away team has less than 5 games, in this season.")
 
     df_away = df_away[AWAY_FEATURES]
 
