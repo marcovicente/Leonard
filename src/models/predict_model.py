@@ -29,7 +29,7 @@ def predict_match_result(home_team_id: int, away_team_id: int,
                .reset_index(drop=True))
 
     if not same_season(match_date, df_home.loc[0, "date"]):
-        return "The home team has less than 5 games, in this season."
+        return "The home team has less than 5 games, in this season.", "N/A"
 
     df_home = df_home[HOME_FEATURES]
 
@@ -39,7 +39,7 @@ def predict_match_result(home_team_id: int, away_team_id: int,
                .head(1)
                .reset_index(drop=True))
     if not same_season(match_date, df_away.loc[0, "date"]):
-        return "The away team has less than 5 games, in this season."
+        return "The away team has less than 5 games, in this season.", "N/A"
 
     df_away = df_away[AWAY_FEATURES]
 
@@ -50,7 +50,28 @@ def predict_match_result(home_team_id: int, away_team_id: int,
     prob = model.predict_proba(df_input).max()
     decoded_pred = LABEL_DECODER[pred[0]]
 
-    return {"result": decoded_pred, "confidence": prob}
+    return decoded_pred, prob
+
+
+def read_model(path):
+
+    with open(path, "rb") as f:
+        return pkl.load(f)
+
+
+def read_data(path):
+
+    return pd.read_csv(path)
+
+
+def same_season(date1, date2):
+
+    diff_days = abs((date1 - date2).days)
+
+    if diff_days < 30:
+        return True
+    else:
+        return False
 
 
 HOME_FEATURES = ['stage', 'year', 'buildUpPlaySpeed_home',
@@ -135,24 +156,3 @@ INPUT_FEATURES = ['stage', 'year', 'buildUpPlaySpeed_home',
                   'home_score_m-3',
                   'home_score_m-4', 'away_score', 'away_score_m-1',
                   'away_score_m-2', 'away_score_m-3', 'away_score_m-4']
-
-
-def read_model(path):
-
-    with open(path, "rb") as f:
-        return pkl.load(f)
-
-
-def read_data(path):
-
-    return pd.read_csv(path)
-
-
-def same_season(date1, date2):
-
-    diff_days = abs((date1 - date2).days)
-
-    if diff_days < 30:
-        return True
-    else:
-        return False

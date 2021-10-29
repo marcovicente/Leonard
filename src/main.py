@@ -1,26 +1,57 @@
+import logger
 from fastapi import FastAPI
 from models.predict_model import predict_match_result
-import logging
 
-# Configure Logging
-logging.basicConfig(format='%(asctime)s %(message)s')
+my_logger = logger.get_logger("soccer prediction")
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
+    """ Root Hello World
+
+    Returns
+    -------
+    Hello World
+    """
     return {"Hello": "Leonard ⚽"}
 
 
-@app.get("/home_team/{home_team}/away_team/{away_team}/match_date/{match_date}")
-def predict(home_team: int, away_team: int, match_date: str):
-    # Predicts Soccer Match result
-    prediction, confidence = predict_match_result(home_team,
-                                                  away_team, match_date)
+@app.get("/home/{home}/away/{away}/match_date/{match_date}")
+def predict(home: int, away: int, match_date: str):
+    """ Predicts the outcome of a given game between two Soccer Teams
 
-    # http://127.0.0.1:8000/home_team/9825/away_team/10260/match_date/20141212
-    # Arsenal vs Man United
-    
-    return {"home_team": home_team, "away_team": away_team,
-            "match_date": match_date}
+    Parameters
+    ----------
+    home : int
+        [Home Team]
+    away : int
+        [Away Team]
+    match_date : str
+        [Match Date]
+
+    Returns
+    -------
+    [Outcome]
+        [Prediction]
+        [Confidence]
+
+    Examples:
+    -------
+    Arsenal vs Man United (Winning Streak)
+    http://127.0.0.1:8000/home/9825/away/10260/match_date/20141201
+
+    Arsenal vs Man United (Loosing Streak)
+    http://127.0.0.1:8000/home/9825/away/10260/match_date/20141226
+
+    """
+    # Predicts Soccer Match result
+    try:
+        prediction, confidence = predict_match_result(home,
+                                                      away, match_date)
+        my_logger.info("Executed")
+        return {"home": home, "away": away, "match_date": match_date,
+                "prediction": prediction, "confidence": confidence}
+    except BaseException as err:
+        my_logger.error(f"Unexpected {err=}, {type(err)=}")
