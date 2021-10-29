@@ -8,6 +8,12 @@ my_logger = logger.get_logger("soccer prediction")
 app = FastAPI()
 
 
+@app.on_event('startup')
+async def load_model():
+    # TODO: Load Model on startup to be in cache
+    my_logger.info("Loads model to cache")
+
+
 @app.get("/")
 def read_root():
     """ Root Hello World

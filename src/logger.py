@@ -3,7 +3,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 # Configure Logging
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
+FORMATTER = logging.Formatter("%(asctime)s - %(name)s - "
+                              "%(levelname)s - %(message)s")
 LOG_FILE = "leonard_soccer.log"
 
 
