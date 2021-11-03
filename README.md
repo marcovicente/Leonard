@@ -8,7 +8,7 @@ Leonard warm up
 
     cookiecutter https://github.com/drivendata/cookiecutter-data-science
 
-### Pre-Requisites:
+### Pre-Requisites
 
     py -m pip install --user virtualenv
 
@@ -45,6 +45,14 @@ Leonard warm up
 ### Stop Server
 
     CTRC + C
+
+### Test API
+
+    http://127.0.0.1:8000/docs
+
+### API Documentation
+
+    http://127.0.0.1:8000/redoc
 
 ## Project Organization
 

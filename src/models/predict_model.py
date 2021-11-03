@@ -14,7 +14,7 @@ my_logger = logger.get_logger("soccer prediction")
 
 
 def predict_match_result(home_team_id: int, away_team_id: int,
-                         match_date_str: str):
+                         match_date_str: str, model):
 
     # Reads CSV processed
     my_logger.info("Read data at {}".format(DATA_PATH))
